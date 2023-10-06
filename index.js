@@ -2,6 +2,7 @@ import c from 'kleur';
 import * as superjson from 'superjson';
 import { uneval, stringify, parse } from 'devalue';
 import ARSON from 'arson';
+import { createTson, tsonDate, tsonRegExp } from 'tupleson';
 
 const obj = {
 	date: new Date(),
@@ -11,15 +12,25 @@ const obj = {
 	xss: '</script><script>alert("XSS")</script>'
 };
 
-obj.self = obj;
+// circular references are not supported by tupleson
+// obj.self = obj;
+
+const tson = createTson({
+	types: [tsonDate, tsonRegExp]
+})
 
 const superjson_serialized = superjson.stringify(obj);
 const devalue_unevaled = uneval(obj);
 const devalue_stringified = stringify(obj);
 const arson_stringified = ARSON.stringify(obj);
+const tson_serialized = tson.stringify(obj);
 
 console.log(
 	`superjson output: ${c.bold().cyan(superjson_serialized.length)} bytes`
+);
+
+console.log(
+	`tson output: ${c.bold().cyan(tson_serialized.length)} bytes`
 );
 // console.log(superjson_serialized);
 console.log(
@@ -55,12 +66,14 @@ function test(fn, label = fn.toString()) {
 
 // serialization
 test(() => superjson.stringify(obj));
+test(() => tson.stringify(obj));
 test(() => uneval(obj));
 test(() => stringify(obj));
 test(() => ARSON.stringify(obj));
 
 // deserialization
 test(() => superjson.parse(superjson_serialized));
+test(() => tson.parse(tson_serialized));
 test(() => eval(`(${devalue_unevaled})`));
 test(() => ARSON.parse(arson_stringified));
 test(() => parse(devalue_stringified));

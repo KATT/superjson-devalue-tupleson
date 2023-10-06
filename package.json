@@ -3,7 +3,8 @@
 		"arson": "^0.2.6",
 		"devalue": "^4.0.0",
 		"kleur": "^4.0.2",
-		"superjson": "^1.9.1"
+		"superjson": "^1.9.1",
+		"tupleson": "^0.16.1"
 	},
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "^13.3.0",
