@@ -28,23 +28,43 @@ cat bundle-size/output-superjson.js | wc -c
 
 ## Results
 
-In node 16.15.1 on an M1 Max, `devalue@2.0.1` handily beats `superjson@1.9.1` on all tests:
 
 ```
-superjson output: 183 bytes
-devalue output: 116 bytes
+superjson output: 232 bytes
+tson output: 313 bytes
+devalue.uneval output: 203 bytes
+devalue.stringify output: 252 bytes
+arson output: 218 bytes
 
 () => superjson.stringify(obj)
-1000000 iterations in 8543ms
+1000000 iterations in 12995ms
 
-() => devalue(obj)
-1000000 iterations in 3190ms
+() => tson.stringify(obj)
+1000000 iterations in 6031ms
+
+() => uneval(obj)
+1000000 iterations in 6760ms
+
+() => stringify(obj)
+1000000 iterations in 7026ms
+
+() => ARSON.stringify(obj)
+1000000 iterations in 4421ms
 
 () => superjson.parse(superjson_serialized)
-1000000 iterations in 3343ms
+1000000 iterations in 5329ms
 
-() => eval(`(${devalue_serialized})`)
-1000000 iterations in 261ms
+() => tson.parse(tson_serialized)
+1000000 iterations in 3037ms
+
+() => eval(`(${devalue_unevaled})`)
+1000000 iterations in 875ms
+
+() => ARSON.parse(arson_stringified)
+1000000 iterations in 2828ms
+
+() => parse(devalue_stringified)
+1000000 iterations in 2446ms
 ```
 
 `superjson.deserialize` adds 12.3kb to your client bundle size. (`devalue` adds 0kb, because there's no runtime.)
